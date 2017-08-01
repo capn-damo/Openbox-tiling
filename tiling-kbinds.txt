@@ -1,0 +1,44 @@
+
+TILING KEYBINDS
+---------------
+W-Left        GoToDesktop
+W-Right       GoToDesktop
+C-W-Left      SendToDesktop
+C-W-Right     SendToDesktop
+W-1           GoToDesktop 1
+W-2           GoToDesktop 2
+W-3           GoToDesktop 3
+W-4           GoToDesktop 4
+W-d           ToggleShowDesktop
+A-4           Close
+A-Up          ToggleShade
+W-Up          ToggleMaximize
+A-Escape      Lower
+
+W-KP_4        Tile to left half
+W-KP_6        Tile to right half
+W-KP_8        Tile to top half
+W-KP_2        Tile to bottom half
+W-KP_7        Tile to top left quarter
+W-KP_9        Tile to top right quarter
+W-KP_1        Tile to bottom left quarter
+W-KP_3        Tile to bottom right quarter
+W-KP_5        Place in centre
+
+C-Right       GrowToEdgeEast
+C-Left        GrowToEdgeWest
+C-Down        GrowToEdgeSouth
+C-Up          GrowToEdgeNorth
+
+W-A-KP_9      MoveTo top right
+W-A-KP_7      MoveTo top left
+W-A-KP_3      MoveTo bottom right
+W-A-KP_1      MoveTo bottom left
+
+W-A-Right     MoveToEdge right
+W-A-Left      MoveToEdge left
+W-A-Up        MoveToEdge top
+W-A-Down      MoveToEdge bottom
+
+W-A-r         Resize
+W-A-m         Move
