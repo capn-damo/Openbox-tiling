@@ -26,6 +26,3 @@ W-A-KP_9      Move to top right
 W-A-KP_7      Move to top left
 W-A-KP_3      Move to bottom right
 W-A-KP_1      Move to bottom left
-
-W-A-r         Resize
-W-A-m         Move
