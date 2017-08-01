@@ -4,7 +4,9 @@
      
 -->
 
-    <!-- Tiling keybinds -->
+    <!-- "Tiling" keybinds -->
+    
+    <!-- Grow to edge -->
     <keybind key="C-Right">
       <action name="GrowToEdgeEast"/>
     </keybind>
@@ -17,8 +19,8 @@
     <keybind key="C-Up">
       <action name="GrowToEdgeNorth"/>
     </keybind>
-    <keybind key="W-KP_4">
-      <!-- Left half of screen -->
+
+    <keybind key="W-KP_4">        <!-- MoveResizeTo Left half of screen -->
       <action name="UnmaximizeFull"/>
       <action name="MaximizeVert"/>
       <action name="Raise"/>
@@ -28,8 +30,7 @@
         <y>0</y>
       </action>
     </keybind>
-    <keybind key="W-KP_6">
-      <!-- Right half of screen -->
+    <keybind key="W-KP_6">        <!--MoveResizeTo Right half of screen -->
       <action name="UnmaximizeFull"/>
       <action name="MaximizeVert"/>
       <action name="Raise"/>
@@ -39,8 +40,7 @@
         <y>0</y>
       </action>
     </keybind>
-    <keybind key="W-KP_8">
-      <!-- Top half of screen -->
+    <keybind key="W-KP_8">        <!--MoveResizeTo Top half of screen -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -50,8 +50,7 @@
         <height>50%</height>
       </action>
     </keybind>
-    <keybind key="W-KP_2">
-      <!-- Bottom half of screen -->
+    <keybind key="W-KP_2">        <!--MoveResizeTo Bottom half of screen -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -61,8 +60,7 @@
         <height>50%</height>
       </action>
     </keybind>
-    <keybind key="W-KP_7">
-      <!-- Top left quarter -->
+    <keybind key="W-KP_7">        <!--MoveResizeTo Top left quarter -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -72,8 +70,7 @@
         <height>50%</height>
       </action>
     </keybind>
-    <keybind key="W-KP_9">
-      <!-- Top right quarter -->
+    <keybind key="W-KP_9">        <!--MoveResizeTo Top right quarter -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -83,8 +80,7 @@
         <height>50%</height>
       </action>
     </keybind>
-    <keybind key="W-KP_1">
-      <!-- Bottom left quarter -->
+    <keybind key="W-KP_1">        <!--MoveResizeTo Bottom left quarter -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -94,8 +90,7 @@
         <height>50%</height>
       </action>
     </keybind>
-    <keybind key="W-KP_3">
-      <!-- Bottom right quarter -->
+    <keybind key="W-KP_3">        <!--MoveResizeTo Bottom right quarter -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -105,8 +100,9 @@
         <height>50%</height>
       </action>
     </keybind>
-    <keybind key="W-KP_5">
-      <!-- Centered -->
+        
+    <!-- Move windows -->
+    <keybind key="W-KP_5">        <!-- Center window (size will change) -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
@@ -116,64 +112,55 @@
         <height>75%</height>
       </action>
     </keybind>
-    <keybind key="W-A-Right">
-      <!-- Move to Right edge -->
+    
+    <keybind key="W-A-Right">         <!-- Move to Right edge -->
       <action name="MoveToEdge">
         <direction>east</direction>
       </action>
     </keybind>
-    <keybind key="W-A-Left">
-      <!-- Move to Left edge -->
+    <keybind key="W-A-Left">          <!-- Move to Left edge -->
       <action name="MoveToEdge">
         <direction>west</direction>
       </action>
     </keybind>
-    <keybind key="W-A-Up">
-      <!-- Move to Top edge -->
+    <keybind key="W-A-Up">            <!-- Move to Top edge -->
       <action name="MoveToEdge">
         <direction>north</direction>
       </action>
     </keybind>
-    <keybind key="W-A-Down">
-      <!-- Move to Bottom edge -->
+    <keybind key="W-A-Down">          <!-- Move to Bottom edge -->
       <action name="MoveToEdge">
         <direction>south</direction>
       </action>
     </keybind>
+    
     <!-- Move to corner -->
-    <keybind key="W-A-KP_9">
+    <keybind key="W-A-KP_9">    <!-- put the window in the top right corner -->
       <action name="Raise"/>
-      <action name="MoveResizeTo"> <!-- put the window in the top right corner -->
+      <action name="MoveResizeTo"> 
         <x>-0</x>
         <y>0</y>
       </action>
     </keybind>
-    <keybind key="W-A-KP_3">
+    <keybind key="W-A-KP_3">    <!-- put the window in the bottom right corner -->
       <action name="Raise"/>
-      <action name="MoveResizeTo"> <!-- put the window in the bottom right corner -->
+      <action name="MoveResizeTo"> 
         <x>-0</x>
         <y>-0</y>
       </action>
     </keybind>
-    <keybind key="W-A-KP_1">
+    <keybind key="W-A-KP_1">    <!-- put the window in the bottom left corner -->
       <action name="Raise"/>
-      <action name="MoveResizeTo"> <!-- put the window in the bottom left corner -->
+      <action name="MoveResizeTo"> 
         <x>0</x>
         <y>-0</y>
       </action>
     </keybind>
-    <keybind key="W-A-KP_7">
+    <keybind key="W-A-KP_7">    <!-- put the window in the top left corner -->
       <action name="Raise"/>
-      <action name="MoveResizeTo"> <!-- put the window in the top left corner -->
+      <action name="MoveResizeTo"> 
         <x>0</x>
         <y>0</y>
       </action>
     </keybind>
-    <!-- Move/Resize -->
-    <keybind key="W-A-r">
-      <action name="Resize"/>
-    </keybind>
-    <keybind key="W-A-m">
-      <action name="Move"/>
-    </keybind>
-
+    
