@@ -6,6 +6,7 @@ C-Right       GrowToEdgeEast
 C-Left        GrowToEdgeWest
 C-Down        GrowToEdgeSouth
 C-Up          GrowToEdgeNorth
+C-KP_5        GrowToFill
 
 W-KP_4        Tile to left half
 W-KP_6        Tile to right half

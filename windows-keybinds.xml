@@ -76,6 +76,9 @@
     <keybind key="C-Up">
       <action name="GrowToEdgeNorth"/>
     </keybind>
+    <keybind key="C-A-f">
+      <action name="GrowToFill"/>
+    </keybind>
 
     <keybind key="W-KP_4">        <!-- MoveResizeTo Left half of screen -->
       <action name="UnmaximizeFull"/>
