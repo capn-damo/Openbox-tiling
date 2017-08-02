@@ -1,11 +1,12 @@
-<!-- Copy and paste these keybinds into '~/.config/openbox/rc.xml'
+<!-- Openbox window management and tiling behaviour
+                                by damo, August 2017
+    
+     Copy and paste these keybinds into '~/.config/openbox/rc.xml'
 
      Ensure that any existing clashes in the rc.xml are removed first
-     
 -->
 
     <!-- "Tiling" keybinds -->
-    
     <!-- Grow to edge -->
     <keybind key="C-Right">
       <action name="GrowToEdgeEast"/>
@@ -19,7 +20,7 @@
     <keybind key="C-Up">
       <action name="GrowToEdgeNorth"/>
     </keybind>
-
+    <!-- Move and resize -->
     <keybind key="W-KP_4">        <!-- MoveResizeTo Left half of screen -->
       <action name="UnmaximizeFull"/>
       <action name="MaximizeVert"/>
