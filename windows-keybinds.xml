@@ -32,10 +32,10 @@
     </keybind>
     
     <!-- Move/Resize -->
-    <keybind key="W-A-r">
+    <keybind key="W-S-r">
       <action name="Resize"/>
     </keybind>
-    <keybind key="W-A-m">
+    <keybind key="W-S-m">
       <action name="Move"/>
     </keybind>
     
