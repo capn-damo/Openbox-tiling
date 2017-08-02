@@ -76,7 +76,7 @@
     <keybind key="C-Up">
       <action name="GrowToEdgeNorth"/>
     </keybind>
-    <keybind key="C-A-f">
+    <keybind key="C-KP_5">
       <action name="GrowToFill"/>
     </keybind>
 
