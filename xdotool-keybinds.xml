@@ -1,0 +1,115 @@
+<!-- These keybinds are for use by 'ob-tile.sh'. 
+     Copy and paste them into '~/.config/openbox/rc.xml'
+
+     Ensure that any existing clashes in the rc.xml are removed first
+
+     If they are edited then 'ob-tile.sh' needs to be edited to match:
+     
+        # keybinds set in rc.xml
+        arrGRIDKBINDS=(super+alt+7 super+alt+9 super+alt+3 super+alt+1 super+alt+5)
+        arrVERTKBINDS=(super+alt+4 super+alt+6)
+        arrHORIZKBINDS=(super+alt+8 super+alt+2)
+-->
+
+<!-- Alternate tiling keybinds for xdotool-->
+    <keybind key="W-A-4">
+      <!-- Left half of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <width>50%</width>
+        <height>100%</height>
+        <x>0</x>
+        <y>0</y>
+      </action>
+    </keybind>
+    <keybind key="W-A-6">
+      <!-- Right half of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <width>50%</width>
+        <height>100%</height>
+        <x>50%</x>
+        <y>0</y>
+      </action>
+    </keybind>
+    <keybind key="W-A-8">
+      <!-- Top half of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>0</x>
+        <y>0</y>
+        <width>100%</width>
+        <height>50%</height>
+      </action>
+    </keybind>
+    <keybind key="W-A-2">
+      <!-- Bottom half of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>0</x>
+        <y>50%</y>
+        <width>100%</width>
+        <height>50%</height>
+      </action>
+    </keybind>
+    <keybind key="W-A-7">
+      <!-- Top left of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>0</x>
+        <y>0</y>
+        <width>50%</width>
+        <height>50%</height>
+      </action>
+    </keybind>
+    <keybind key="W-A-9">
+      <!-- Top right of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>50%</x>
+        <y>0</y>
+        <width>50%</width>
+        <height>50%</height>
+      </action>
+    </keybind>
+    <keybind key="W-A-1">
+      <!-- Bottom left of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>0</x>
+        <y>50%</y>
+        <width>50%</width>
+        <height>50%</height>
+      </action>
+    </keybind>
+    <keybind key="W-A-3">
+      <!-- Bottom right of screen -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>50%</x>
+        <y>50%</y>
+        <width>50%</width>
+        <height>50%</height>
+      </action>
+    </keybind>
+    <keybind key="W-A-5">
+      <!-- Centered -->
+      <action name="UnmaximizeFull"/>
+      <action name="Raise"/>
+      <action name="MoveResizeTo">
+        <x>center</x>
+        <y>center</y>
+        <width>50%</width>
+        <height>75%</height>
+      </action>
+    </keybind>
+<!-- end alternates -->
+
