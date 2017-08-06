@@ -10,9 +10,9 @@ USAGE='
     -G|--grid       Tile up to 4 quartered windows; a fifth window will be centered;
                     Any others will be left alone.
                     
-    -V|--vert       Tile 2 windows side by side.
+    -V|--vert       Tile 2 windows side by side (only 2 windows must be open)
     
-    -H|--horiz      Tile 2 windows above and below.
+    -H|--horiz      Tile 2 windows above and below (only 2 windows must be open)
     
         *           This USAGE.
         
@@ -61,8 +61,9 @@ tileVert(){
         tileWindows $arrL $arg
     else
         echo "Only 2 windows should be on the desktop"
-        notify-send "Too many windows for this operation.
-ob-tile.sh requires only 2 windows."
+        notify-send -t 3000 -i "$HOME/.icons/tile-vert.png" "Too many windows for this operation.
+ob-tile.sh requires only 2 windows
+for vertical tiling."
         exit 0
     fi
 }
@@ -74,8 +75,9 @@ tileHoriz(){
         tileWindows $arrL $arg
     else
         echo "Only 2 windows should be on the desktop"
-        notify-send "Too many windows for this operation.
-ob-tile.sh requires only 2 windows."
+        notify-send -t 3000 -i "$HOME/.icons/tile-vert.png" "Too many windows for this operation.
+ob-tile.sh requires only 2 windows
+for horizontal tiling."
         exit 0
     fi
 }
@@ -110,14 +112,15 @@ getWM_VALUES(){         # get frame and window geometry set by WM
 getWindows(){   
     for id in "${arrWIN_ID[@]}";do
         getWM_VALUES
-        wmctrlCMD="$id -e 0,$posX,$posY,$WIDTH,$HEIGHT"
+        wmctrlCMD="wmctrl -ir $id -e 0,$posX,$posY,$WIDTH,$HEIGHT"
         echo "$wmctrlCMD" >> "$TMP_WIN_DIMS"
     done
 }
 
 restoreWindows(){
     while read line;do
-        wmctrl -ir $line
+        eval $line
+        sleep 0.05
     done < "$TMP_WIN_DIMS"
 }
 
@@ -134,7 +137,7 @@ testRestore(){
 }
 
 # get window list, save to tempfile
-wmctrl -lx > "$TMP_WIN_LIST"
+wmctrl -lp > "$TMP_WIN_LIST"
 
 declare -a arrWIN_ID
 
