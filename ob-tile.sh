@@ -3,39 +3,109 @@
 #   ob-tile.sh   by damo, August 2017
 #
 #   Requires wmctrl and xdotool
-
+#
+#   The first run tiles the windows, the second will restore their positions.
+#
+#############################################################################
 USAGE='
     ob-tile.sh [arg]
     
-    -G|--grid       Tile up to 4 quartered windows; a fifth window will be centered;
+    -G |--grid      Tile up to 4 quartered windows; a fifth window will be centered;
                     Any others will be left alone.
                     
-    -V|--vert       Tile 2 windows side by side (only 2 windows must be open)
+    -V |--vert      Tile 2 windows side by side (only 2 windows must be open)
     
-    -H|--horiz      Tile 2 windows above and below (only 2 windows must be open)
+    -H |--horiz     Tile 2 windows above and below (only 2 windows must be open)
     
         *           This USAGE.
         
     With no script arguments the windows will be grid tiled.
 '
 
-TMP_WIN_LIST=$(mktemp --tmpdir winlist.XXXX)
-TMP_WIN_DIMS="$HOME/temp-windims.txt"
+TMP_WIN_LIST=$(mktemp --tmpdir winlist.XXXX)    # stores window ID's
+TMP_WIN_DIMS="$HOME/temp-windims.txt"           # stores geometry for restoring windows
+STORE_ARG="$HOME/.config/obtilerc"
 
+# keybinds set in rc.xml
 arrGRIDKBINDS=(super+alt+7 super+alt+9 super+alt+3 super+alt+1 super+alt+5)
 arrVERTKBINDS=(super+alt+4 super+alt+6)
 arrHORIZKBINDS=(super+alt+8 super+alt+2)
 
-findArgs(){     # get command args
+icoGrid="$HOME/.icons/tile-grid.png"
+icoVert="$HOME/.icons/tile-vert.png"
+icoHoriz="$HOME/.icons/tile-horiz.png"
+
+NOTIFY="notify-send -t 3000 -i " 
+NOTIFY_TXT='Too many windows for this operation.
+ob-tile.sh requires only 2 windows
+for vertical tiling.
+'
+
+runArgs(){     # get command args
     for arg in "$@";do
         case "$arg" in
             -G|--grid ) tileGrid;;
             -V|--vert ) tileVert;;
             -H|--horiz) tileHoriz;;
-            *         ) echo "$USAGE"
+            -h |--help) ;;
+            *         ) echo "Unknown script argument"
                         exit 0;;
         esac
     done
+}
+
+testArgs(){     # get command args, see if the command has been repeated.
+    a="$@"
+    local oldTiling
+    local newTiling
+    
+    if [[ -f $STORE_ARG ]] &>/dev/null;then
+        oldTiling="$(cat $STORE_ARG)"
+    else
+        oldTiling=0
+        echo "$oldTiling" > "$STORE_ARG"
+    fi
+
+    case "$a" in
+        -G|--grid ) newTiling="$a"
+                    echo "$newTiling" > "$STORE_ARG"
+                    ;;
+        -H|--horiz )  if [[ ${#arrWIN_ID[@]} > 2 ]];then
+                                    echo "Only 2 windows should be on the desktop"
+                                    $NOTIFY "$icoHoriz" "$NOTIFY_TXT"
+                                    newTiling=0
+                                    echo "$newTiling" > "$STORE_ARG"
+                                    exit 1
+                                else
+                                    newTiling="$a"
+                                    echo "$newTiling" > "$STORE_ARG"
+                                fi  
+                               ;;
+        -V|--vert )  if [[ ${#arrWIN_ID[@]} > 2 ]];then
+                                    echo "Only 2 windows should be on the desktop"
+                                    $NOTIFY "$icoVert" "$NOTIFY_TXT"
+                                    newTiling=0
+                                    echo "$newTiling" > "$STORE_ARG"
+                                    exit 1
+                                else
+                                    newTiling="$a"
+                                    echo "$newTiling" > "$STORE_ARG"
+                                fi  
+                               ;;
+        -h |--help) newTiling=0
+                    echo "$newTiling" > "$STORE_ARG"
+                    exit 0            
+                    ;;
+        ' '       ) ;;  # no args, so grid tile  
+        *         ) echo "Unknown script argument"
+                    exit 0
+                    ;;
+    esac
+
+    if [[ $oldTiling != $newTiling ]] &>/dev/null;then
+        rm "$TMP_WIN_DIMS" 
+    fi
+    
 }
 
 tileWindows(){  
@@ -61,9 +131,7 @@ tileVert(){
         tileWindows $arrL $arg
     else
         echo "Only 2 windows should be on the desktop"
-        notify-send -t 3000 -i "$HOME/.icons/tile-vert.png" "Too many windows for this operation.
-ob-tile.sh requires only 2 windows
-for vertical tiling."
+        $NOTIFY "$icoVert" "$NOTIFY_TXT"
         exit 0
     fi
 }
@@ -75,9 +143,7 @@ tileHoriz(){
         tileWindows $arrL $arg
     else
         echo "Only 2 windows should be on the desktop"
-        notify-send -t 3000 -i "$HOME/.icons/tile-vert.png" "Too many windows for this operation.
-ob-tile.sh requires only 2 windows
-for horizontal tiling."
+        $NOTIFY "$icoHoriz" "$NOTIFY_TXT"
         exit 0
     fi
 }
@@ -88,7 +154,7 @@ tileGrid(){
     tileWindows $arrL $arg  
 }
 
-getWM_VALUES(){         # get frame and window geometry set by WM
+getWM_VALUES(){         # get frame and window geometry set by Openbox
     
     declare -a arrFRAME_EXTENTS arrWIN_EXTENTS
     
@@ -104,7 +170,7 @@ getWM_VALUES(){         # get frame and window geometry set by WM
     WIDTH="${arrWIN_EXTENTS[2]}"
     HEIGHT="${arrWIN_EXTENTS[3]}"
     
-    posX=$((UPPER_L_X - BORDER_L))
+    posX=$((UPPER_L_X - BORDER_L))  # adjust for window borders
     posY=$((UPPER_L_Y - BORDER_T))
 }
 
@@ -120,7 +186,7 @@ getWindows(){
 restoreWindows(){
     while read line;do
         eval $line
-        sleep 0.05
+#        sleep 0.05
     done < "$TMP_WIN_DIMS"
 }
 
@@ -135,6 +201,10 @@ testRestore(){
         exit 0
     fi    
 }
+
+if [[ $@ == -h ]] || [[ $@ == --help ]] &>/dev/null;then
+    echo "$USAGE"
+fi
 
 # get window list, save to tempfile
 wmctrl -lp > "$TMP_WIN_LIST"
@@ -155,13 +225,16 @@ while read line;do
     fi
 done < "$TMP_WIN_LIST"
 
+# see if the comand is repeated, to restore window positions
+testArgs "$@"
+
 # see if we are toggling the window positions to their original placement.
 testRestore
 
 if (( "$#" == 0 ));then
     tileGrid            # no script args, so just do a grid tile.
 else
-    findArgs "$@"
+    runArgs "$@"
 fi
 
 rm "$TMP_WIN_LIST"
