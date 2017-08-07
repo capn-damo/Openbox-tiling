@@ -16,7 +16,7 @@ USAGE='
     -V |--vert      Tile up to 3 windows side by side; a 4th window will be centered;
                     Any others will be left alone.
     
-    -H |--horiz     Tile 2 windows above and below; a 4th window will be centered;
+    -H |--horiz     Tile up to 3 windows above and below; a 4th window will be centered;
                     Any others will be left alone.
     
         *           This USAGE.
