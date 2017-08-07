@@ -31,7 +31,7 @@ STORE_WIN_CMDS="$HOME/win_ids.tmp"
 
 # keybinds previously set in rc.xml
 arrGRIDKBINDS=(super+alt+7 super+alt+9 super+alt+3 super+alt+1 super+alt+5)         # TL,TR,BR,BL,center
-arrVERTKBINDS_2=(super+alt+4 super+alt+6)                                           # Left half,Bottom half
+arrVERTKBINDS_2=(super+alt+4 super+alt+6)                                           # Left half,Right half
 arrHORIZKBINDS_2=(super+alt+8 super+alt+2)                                          # Top half, Bottom half
 arrVERTKBINDS_N=( ctrl+super+alt+4 ctrl+super+alt+5 ctrl+super+alt+6 super+alt+5 )  # L,M,R vert,center
 arrHORIZKBINDS_N=( ctrl+super+alt+1 ctrl+super+alt+2 ctrl+super+alt+3 super+alt+5 ) # L,M,R horiz,center
