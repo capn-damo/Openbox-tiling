@@ -1,12 +1,15 @@
 #!/bin/bash
 #
-#   ob-tile.sh   by damo, August 2017
+#   ob-tile.sh   Copyright (C) 2017 damo    <damo.linux@gmail.com>
 #
 #   Requires wmctrl and xdotool
 #
 #   The first run tiles the windows, the second will restore their positions.
 #
-#############################################################################
+#   You must first copy the contents of "xdotool-keybinds.xml" into "~/.config/openbox/rc.xml"
+#
+#############################################################################################
+
 USAGE='
     ob-tile.sh [arg]
     
