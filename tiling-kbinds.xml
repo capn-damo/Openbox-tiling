@@ -103,14 +103,14 @@
     </keybind>
         
     <!-- Move windows -->
-    <keybind key="W-KP_5">        <!-- Center window (size will change) -->
+    <keybind key="W-KP_5">        <!-- Center window -->
       <action name="UnmaximizeFull"/>
       <action name="Raise"/>
       <action name="MoveResizeTo">
         <x>center</x>
         <y>center</y>
-        <width>50%</width>
-        <height>75%</height>
+        <width>current</width>
+        <height>current</height>
       </action>
     </keybind>
     

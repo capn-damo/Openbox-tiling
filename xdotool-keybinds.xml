@@ -176,8 +176,8 @@ arrHORIZKBINDS_N=( ctrl+super+alt+1 ctrl+super+alt+2 ctrl+super+alt+3 super+alt+
       <action name="MoveResizeTo">
         <x>center</x>
         <y>center</y>
-        <width>50%</width>
-        <height>75%</height>
+        <width>current</width>
+        <height>current</height>
       </action>
     </keybind>
 <!-- end alternates -->
