@@ -13,33 +13,28 @@ USAGE='
     -G |--grid      Tile up to 4 quartered windows; a fifth window will be centered;
                     Any others will be left alone.
                     
-    -V |--vert      Tile 2 windows side by side (only 2 windows must be open)
+    -V |--vert      Tile up to 3 windows side by side; a 4th window will be centered;
+                    Any others will be left alone.
     
-    -H |--horiz     Tile 2 windows above and below (only 2 windows must be open)
+    -H |--horiz     Tile 2 windows above and below; a 4th window will be centered;
+                    Any others will be left alone.
     
         *           This USAGE.
         
-    With no script arguments the windows will be grid tiled.
+    With no script arguments the windows will be grid tiled, and original positions are not stored.
 '
 
 TMP_WIN_LIST=$(mktemp --tmpdir winlist.XXXX)    # stores window ID's
-TMP_WIN_DIMS="$HOME/temp-windims.txt"           # stores geometry for restoring windows
-STORE_ARG="$HOME/.config/obtilerc"
+TMP_WIN_DIMS="$HOME/temp-windims.tmp"           # stores geometry for restoring windows
+STORE_ARG="$HOME/ob_tiling.tmp"
+STORE_WIN_CMDS="$HOME/win_ids.tmp"
 
-# keybinds set in rc.xml
-arrGRIDKBINDS=(super+alt+7 super+alt+9 super+alt+3 super+alt+1 super+alt+5)
-arrVERTKBINDS=(super+alt+4 super+alt+6)
-arrHORIZKBINDS=(super+alt+8 super+alt+2)
-
-icoGrid="$HOME/.icons/tile-grid.png"
-icoVert="$HOME/.icons/tile-vert.png"
-icoHoriz="$HOME/.icons/tile-horiz.png"
-
-NOTIFY="notify-send -t 3000 -i " 
-NOTIFY_TXT='Too many windows for this operation.
-ob-tile.sh requires only 2 windows
-for vertical tiling.
-'
+# keybinds previously set in rc.xml
+arrGRIDKBINDS=(super+alt+7 super+alt+9 super+alt+3 super+alt+1 super+alt+5)         # TL,TR,BR,BL,center
+arrVERTKBINDS_2=(super+alt+4 super+alt+6)                                           # Left half,Bottom half
+arrHORIZKBINDS_2=(super+alt+8 super+alt+2)                                          # Top half, Bottom half
+arrVERTKBINDS_N=( ctrl+super+alt+4 ctrl+super+alt+5 ctrl+super+alt+6 super+alt+5 )  # L,M,R vert,center
+arrHORIZKBINDS_N=( ctrl+super+alt+1 ctrl+super+alt+2 ctrl+super+alt+3 super+alt+5 ) # L,M,R horiz,center
 
 runArgs(){     # get command args
     for arg in "$@";do
@@ -54,56 +49,44 @@ runArgs(){     # get command args
     done
 }
 
-testArgs(){     # get command args, see if the command has been repeated.
-    a="$@"
-    local oldTiling
-    local newTiling
+testArgs(){     # test command args, see if the command has been repeated.
+    a="$1"
+    local TILING_OLD
+    local TILING_NEW
     
     if [[ -f $STORE_ARG ]] &>/dev/null;then
-        oldTiling="$(cat $STORE_ARG)"
+        TILING_OLD="$(cat "$STORE_ARG")"
     else
-        oldTiling=0
-        echo "$oldTiling" > "$STORE_ARG"
+        TILING_OLD=0
+        echo "$TILING_OLD" > "$STORE_ARG"
     fi
 
+if (( $# == 0 ));then 
+    tileGrid
+    exit 0
+fi
     case "$a" in
-        -G|--grid ) newTiling="$a"
-                    echo "$newTiling" > "$STORE_ARG"
-                    ;;
-        -H|--horiz )  if [[ ${#arrWIN_ID[@]} > 2 ]];then
-                                    echo "Only 2 windows should be on the desktop"
-                                    $NOTIFY "$icoHoriz" "$NOTIFY_TXT"
-                                    newTiling=0
-                                    echo "$newTiling" > "$STORE_ARG"
-                                    exit 1
-                                else
-                                    newTiling="$a"
-                                    echo "$newTiling" > "$STORE_ARG"
-                                fi  
-                               ;;
-        -V|--vert )  if [[ ${#arrWIN_ID[@]} > 2 ]];then
-                                    echo "Only 2 windows should be on the desktop"
-                                    $NOTIFY "$icoVert" "$NOTIFY_TXT"
-                                    newTiling=0
-                                    echo "$newTiling" > "$STORE_ARG"
-                                    exit 1
-                                else
-                                    newTiling="$a"
-                                    echo "$newTiling" > "$STORE_ARG"
-                                fi  
-                               ;;
-        -h |--help) newTiling=0
-                    echo "$newTiling" > "$STORE_ARG"
+        -G|--grid|-H|--horiz|-V|--vert )TILING_NEW="$a"
+                                        echo "$TILING_NEW" > "$STORE_ARG"
+                                        ;;
+        -h |--help) TILING_NEW=0
+                    echo "$TILING_NEW" > "$STORE_ARG"
                     exit 0            
                     ;;
-        ' '       ) ;;  # no args, so grid tile  
         *         ) echo "Unknown script argument"
                     exit 0
                     ;;
     esac
 
-    if [[ $oldTiling != $newTiling ]] &>/dev/null;then
-        rm "$TMP_WIN_DIMS" 
+    if [[ $TILING_OLD != "$TILING_NEW" ]] &>/dev/null;then
+        if ! diff "$TMP_WIN_DIMS" "$STORE_WIN_CMDS" 2>/dev/null;then
+            restoreWindows "$TMP_WIN_DIMS" 2>/dev/null           
+        fi
+
+    elif diff "$TMP_WIN_DIMS" "$STORE_WIN_CMDS" 2>/dev/null;then
+        restoreWindows "$STORE_WIN_CMDS"            
+    else
+        restoreWindows "$TMP_WIN_DIMS" 2>/dev/null
     fi
     
 }
@@ -111,58 +94,52 @@ testArgs(){     # get command args, see if the command has been repeated.
 tileWindows(){  
     num=$1   
     case $2 in
-        G   ) arrKB=("${arrGRIDKBINDS[@]}");;
-        V   ) arrKB=("${arrVERTKBINDS[@]}");;
-        H   ) arrKB=("${arrHORIZKBINDS[@]}");;
+        G     ) arrKB=("${arrGRIDKBINDS[@]}");;
+        V2   ) arrKB=("${arrVERTKBINDS_2[@]}");;
+        VN   ) arrKB=("${arrVERTKBINDS_N[@]}");;
+        H2   ) arrKB=("${arrHORIZKBINDS_2[@]}");;
+        HN   ) arrKB=("${arrHORIZKBINDS_N[@]}");;
         *   ) echo "Error"
               exit 1;;
     esac
     
     for (( i=0; i < $num; i++ ));do
-        xdotool windowfocus --sync ${arrWIN_ID[$i]} 
-        xdotool key --clearmodifiers ${arrKB[$i]} 
+        xdotool windowfocus --sync "${arrWIN_ID[$i]}"
+        xdotool key --clearmodifiers "${arrKB[$i]}" 
     done
 }
 
 tileVert(){
-    local arg="V"
     arrL=${#arrWIN_ID[@]}
+    
     if (( $arrL < 3 )) &>/dev/null;then
-        tileWindows $arrL $arg
+        tileWindows $arrL "V2"
     else
-        echo "Only 2 windows should be on the desktop"
-        $NOTIFY "$icoVert" "$NOTIFY_TXT"
-        exit 0
+        tileWindows $arrL "VN"
     fi
 }
 
 tileHoriz(){
-    local arg="H"
     arrL=${#arrWIN_ID[@]}
+    
     if (( $arrL < 3 )) &>/dev/null;then
-        tileWindows $arrL $arg
+        tileWindows $arrL "H2"
     else
-        echo "Only 2 windows should be on the desktop"
-        $NOTIFY "$icoHoriz" "$NOTIFY_TXT"
-        exit 0
+        tileWindows $arrL "HN"
     fi
 }
 
 tileGrid(){
-    local arg="G"
     arrL=${#arrWIN_ID[@]}
-    tileWindows $arrL $arg  
+    tileWindows $arrL "G"  
 }
 
 getWM_VALUES(){         # get frame and window geometry set by Openbox
-    
     declare -a arrFRAME_EXTENTS arrWIN_EXTENTS
     
     arrFRAME_EXTENTS=( $(xprop -id $id _NET_FRAME_EXTENTS | awk ' {gsub(/,/,"");print $3,$4,$5,$6}') )
     BORDER_L="${arrFRAME_EXTENTS[0]}"
-    BORDER_R="${arrFRAME_EXTENTS[1]}"
     BORDER_T="${arrFRAME_EXTENTS[2]}"
-    BORDER_B="${arrFRAME_EXTENTS[3]}"
     
     arrWIN_EXTENTS=( $(xwininfo -id $id | grep -E "(Absolute|Width|Height)" | awk '{print $NF}') )
     UPPER_L_X="${arrWIN_EXTENTS[0]}"
@@ -180,14 +157,16 @@ getWindows(){
         getWM_VALUES
         wmctrlCMD="wmctrl -ir $id -e 0,$posX,$posY,$WIDTH,$HEIGHT"
         echo "$wmctrlCMD" >> "$TMP_WIN_DIMS"
+        if [[ ! -f $STORE_WIN_CMDS ]] &>/dev/null;then
+            echo "$wmctrlCMD" >> "$STORE_WIN_CMDS"
+        fi
     done
 }
 
-restoreWindows(){
-    while read line;do
-        eval $line
-#        sleep 0.05
-    done < "$TMP_WIN_DIMS"
+restoreWindows(){   
+    while read -r line;do
+        eval "$line"
+    done < "$1"
 }
 
 # test if tempfile exists, containing geometry etc needed by wmctrl.
@@ -196,7 +175,12 @@ testRestore(){
         touch "$TMP_WIN_DIMS"
         getWindows
     else
-        restoreWindows
+        if diff "$TMP_WIN_DIMS" "$STORE_WIN_CMDS" 2>/dev/null;then
+            restoreWindows "$STORE_WIN_CMDS"
+        else
+            cp "$TMP_WIN_DIMS" "$STORE_WIN_CMDS"
+            restoreWindows "$STORE_WIN_CMDS"
+        fi
         rm "$TMP_WIN_DIMS"
         exit 0
     fi    
@@ -216,10 +200,10 @@ CURRDTOP=$(xprop -root _NET_CURRENT_DESKTOP | tail -c -2) # desktop number
 
 # loop through windows, send OB keybinds to each
 i=0
-while read line;do
-    if grep -Eq -v "(Conky|Tint2)" "$TMP_WIN_LIST" ;then
-        if [[ $(echo $line | awk '{print $2}') == $CURRDTOP ]] &>/dev/null;then
-            arrWIN_ID[$i]=$(echo $line | awk '{print $1}')
+while read -r line;do
+    if grep -Eq -v "(Conky|Tint2)" "$TMP_WIN_LIST" &>/dev/null ;then
+        if [[ $(echo "$line" | awk '{print $2}') == $CURRDTOP ]] &>/dev/null;then
+            arrWIN_ID[$i]=$(echo "$line" | awk '{print $1}')
             ((i+=1))
         fi
     fi
