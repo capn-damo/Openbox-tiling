@@ -6,10 +6,7 @@
 #
 #   The first run tiles the windows, the second will restore their positions.
 #
-#   You must first copy the contents of "xdotool-keybinds.xml" into "~/.config/openbox/rc.xml"
-#
-#############################################################################################
-
+#############################################################################
 USAGE='
     ob-tile.sh [arg]
     
@@ -45,6 +42,7 @@ runArgs(){     # get command args
             -G|--grid ) tileGrid;;
             -V|--vert ) tileVert;;
             -H|--horiz) tileHoriz;;
+            -M|--max  ) maxWin;;
             -h |--help) ;;
             *         ) echo "Unknown script argument"
                         exit 0;;
@@ -72,6 +70,9 @@ fi
         -G|--grid|-H|--horiz|-V|--vert )TILING_NEW="$a"
                                         echo "$TILING_NEW" > "$STORE_ARG"
                                         ;;
+        -M|--max  ) maxWin
+                    exit 0
+                    ;;
         -h |--help) TILING_NEW=0
                     echo "$TILING_NEW" > "$STORE_ARG"
                     exit 0            
@@ -102,8 +103,8 @@ tileWindows(){
         VN   ) arrKB=("${arrVERTKBINDS_N[@]}");;
         H2   ) arrKB=("${arrHORIZKBINDS_2[@]}");;
         HN   ) arrKB=("${arrHORIZKBINDS_N[@]}");;
-        *   ) echo "Error"
-              exit 1;;
+        *    ) echo "Error"
+               exit 1;;
     esac
     
     for (( i=0; i < $num; i++ ));do
@@ -135,6 +136,15 @@ tileHoriz(){
 tileGrid(){
     arrL=${#arrWIN_ID[@]}
     tileWindows $arrL "G"  
+}
+
+maxWin(){
+    local i=0
+    local arrL=${#arrWIN_ID[@]}
+    for (( i=0; i < $arrL; i++ ));do
+        xdotool windowfocus --sync "${arrWIN_ID[$i]}"
+        xdotool key --clearmodifiers "super+Up" 
+    done
 }
 
 getWM_VALUES(){         # get frame and window geometry set by Openbox
@@ -177,7 +187,7 @@ testRestore(){
     if [[ ! -f "$TMP_WIN_DIMS" ]] &>/dev/null ;then
         touch "$TMP_WIN_DIMS"
         getWindows
-    else
+    else    # see if windows have changed since last tiling
         if diff "$TMP_WIN_DIMS" "$STORE_WIN_CMDS" 2>/dev/null;then
             restoreWindows "$STORE_WIN_CMDS"
         else
