@@ -1,4 +1,4 @@
-#!/bin/bash
+git #!/bin/bash
 #
 #   ob-tile.sh   Copyright (C) 2017 damo    <damo.linux@gmail.com>
 #
@@ -18,6 +18,8 @@ USAGE='
     
     -H |--horiz     Tile up to 3 windows above and below; a 4th window will be centered;
                     Any others will be left alone.
+                    
+    -M | --max      Toggle maximize all windows on desktop.
     
         *           This USAGE.
         
