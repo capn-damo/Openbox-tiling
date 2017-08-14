@@ -4,6 +4,8 @@
 
 `grid-tile.sh`  Simple script to tile 4 windows in a grid;
 
+ `maxwin.sh`    Script to Toggle Maximize all windows on current desktop;  
+
 `tiling-keybinds.xml`   Keybinds for tiling windows in Openbox, using numpad keys;
 
 `display-kbinds.sh`     Script to display manual numpad keybinds in a yad dialog window;
@@ -34,3 +36,5 @@ ICONS
 -----
 If you would like to use launchers to run the grid/vertical/horizontal commands then copy the
 icons to eg `~/.icons` or `/usr/share/pixmaps`.
+
+`tile-max.png` is for use with the maxwin.sh script. 
