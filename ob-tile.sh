@@ -1,4 +1,4 @@
-git #!/bin/bash
+#!/bin/bash
 #
 #   ob-tile.sh   Copyright (C) 2017 damo    <damo.linux@gmail.com>
 #
